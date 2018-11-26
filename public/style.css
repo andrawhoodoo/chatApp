@@ -17,12 +17,12 @@ html {
 body {
     margin: 0px;
     height: 100%;
-    background-color: black;
+    background: url(background.jpg);
     color: white;
 }
 
 header {
-    text-align: left;
+    text-align: center;
     text-decoration: underline;
     margin-bottom: 20px;
     margin-left: 20px;
@@ -38,24 +38,26 @@ div#change_username, section#input_zone {
 
 div#change_username {
     height: 3%;
-    margin-left: 20px;
-    margin-bottom: 20px;
+    margin-left: 25%;
     display: inline-block;
     background-color: red;
 }
 
 section#chatroom {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 10px;
     border: 5px inset red;
-    height: 85%;
-    overflow: auto;
+    height: 50%;
+    width: 50%;
+    overflow-y: scroll;
 }
 
 section#input_zone {
     height: 7%;
-    margin-left: 20px;
-    margin-right: 20px;
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
     text-align: center;
     background-color: red;
 }
