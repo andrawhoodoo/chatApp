@@ -23,32 +23,31 @@ server = app.listen(3000)
 //socket.io instantiation
 const io = require("socket.io")(server)
 
-
 //listen on every connection
 io.on('connection', (socket) => {
 	console.log('New user connected')
 
 
-	//default username
-	socket.username = "Anonymous"
-
     //listen on change_username
     socket.on('change_username', (data) => {
-        socket.username = data.username
-        MongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            var dbo = db.db("mydb");
-            dbo.collection("chatlog").find({}).toArray(function(err, result) {
+        if(data.username !== "") {
+            socket.username = data.username
+            MongoClient.connect(url, function(err, db) {
                 if (err) throw err;
-                for(i = 0; i < result.length; i = i +1) {
-                    if(result[i].message !== "")
-                    socket.emit('new_message', {message : result[i].message, username : result[i].name});
-                }
-                db.close();
+                var dbo = db.db("mydb");
+                dbo.collection("chatlog").find({}).toArray(function(err, result) {
+                    if (err) throw err;
+                    for(i = 0; i < result.length; i = i +1) {
+                        if(result[i].message !== "")
+                        socket.emit('new_message', {message : result[i].message, username : result[i].name});
+                    }
+                    db.close();
+                });
             });
-        });
-        io.sockets.emit('new_message', {message : "has joined the conversation.", username : socket.username})
-    })
+            io.sockets.emit('new_message', {message : "has joined the conversation!", username : socket.username});
+        }
+    });
+
 
     //listen on new_message
     socket.on('new_message', (data) => {
@@ -64,10 +63,14 @@ io.on('connection', (socket) => {
                 db.close();
             });
         });
-    })
+    });
 
     //listen on typing
     socket.on('typing', (data) => {
     	socket.broadcast.emit('typing', {username : socket.username})
-    })
-})
+    });
+
+    socket.on('disconnect', function() {
+        io.sockets.emit('new_message', {message : "has left the conversation.", username : socket.username})
+    });
+});
